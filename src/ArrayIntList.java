@@ -1,73 +1,125 @@
+import java.util.Scanner;
+
 public class ArrayIntList {
-    private int[] contents;
 
-    public ArrayIntList(int userSize) {
-        contents = new int[userSize];
+    public static void main(String[] args) {
+        boolean isRunning = true;
+        ArrayIntList valuesList = new ArrayIntList();
+        Scanner scanner = new Scanner(System.in);
+
+        while (isRunning) {
+            System.out.println("Select an option:");
+            System.out.println("'A' to append to the list.");
+            System.out.println("'I' to insert at a position.");
+            System.out.println("'D' to remove a value.");
+            System.out.println("'P' to display all values.");
+            System.out.println("'Q' to quit.");
+
+            String choice = scanner.next();
+            scanner.nextLine();
+
+            switch (choice) {
+                case "A":
+                    addToValuesList(valuesList, scanner);
+                    break;
+                case "I":
+                    insertIntoValuesList(valuesList, scanner);
+                    break;
+                case "D":
+                    removeFromValuesList(valuesList, scanner);
+                    break;
+                case "P":
+                    displayValuesList(valuesList);
+                    break;
+                case "Q":
+                    isRunning = false;
+                    break;
+            }
+        }
+
+        scanner.close();
     }
-        
+
+    private static void displayValuesList(ArrayIntList valuesList) {
+        valuesList.display();
+    }
+
+    private static void addToValuesList(ArrayIntList valuesList, Scanner scanner) {
+        System.out.println("Enter a number to add:");
+        int number = scanner.nextInt();
+        valuesList.append(number);
+    }
+
+    private static void insertIntoValuesList(ArrayIntList valuesList, Scanner scanner) {
+        System.out.println("Enter a number to insert:");
+        int number = scanner.nextInt();
+        System.out.println("Enter the index to insert at:");
+        int index = scanner.nextInt();
+        valuesList.insert(number, index);
+    }
+
+    private static void removeFromValuesList(ArrayIntList valuesList, Scanner scanner) {
+        System.out.println("Enter the index of the number to remove:");
+        int index = scanner.nextInt();
+        valuesList.remove(index);
+    }
+}
+
+class ArrayIntList {
+    private int[] elements;
+    private int count;
+
     public ArrayIntList() {
-        this(1); 
+        elements = new int[10]; // Default capacity of 10
+        count = 0;
     }
-    
 
-    @Override
-    public String toString() {
-        if (size() == 0) {
-            return "[]";
-        } else {
-            String result = "[" + contents[0];
-            for (int i = 1; i < size(); i++) {
-                result += ", " + contents[i];
-            }
-            result += "]";
-            return result;
+    public void append(int value) {
+        ensureCapacity();
+        elements[count] = value;
+        count++;
+    }
+
+    public void insert(int value, int index) {
+        if (index < 0 || index > count) {
+            System.out.println("Invalid index.");
+            return;
+        }
+        ensureCapacity();
+        for (int i = count; i > index; i--) {
+            elements[i] = elements[i - 1];
+        }
+        elements[index] = value;
+        count++;
+    }
+
+    public void remove(int index) {
+        if (index < 0 || index >= count) {
+            System.out.println("Invalid index.");
+            return;
+        }
+        for (int i = index; i < count - 1; i++) {
+            elements[i] = elements[i + 1];
+        }
+        count--;
+    }
+
+    public void display() {
+        if (count == 0) {
+            System.out.println("The list is empty.");
+            return;
+        }
+        for (int i = 0; i < count; i++) {
+            System.out.print(elements[i] + " ");
+        }
+        System.out.println();
+    }
+
+    private void ensureCapacity() {
+        if (count >= elements.length) {
+            int[] newElements = new int[elements.length * 2];
+            System.arraycopy(elements, 0, newElements, 0, elements.length);
+            elements = newElements;
         }
     }
-
-    public void add (int newValue) {
-        contents[size()] = newValue;
-    }
-
-    public int size() {
-        int count = 0;
-        for (int i = 0; i < contents.length; i++) {
-            if (contents[i] != 0) {
-                count++;
-            }
-        }
-        return count;
-    }
-
-    public void add(int index, int value) {
-        for (int i = size(); i > index; i--) {
-            contents[i] = contents[i - 1];
-        }
-        contents[index] = value;
-    }
-
-    public void set(int index, int value) {
-        contents[index] = value;
-    }
-
-    public int get(int index) {
-        return contents[index];
-    }
-
-    public boolean isEmpty() {
-        return size() == 0;
-    }
-
-    public int indexOf(int value) {
-        for (int i = 0; i < size(); i++) {
-            if (contents[i] == value) {
-                return i;
-            }
-        }
-        return -1;
-    }
-
-    public boolean contains(int value) {
-        return indexOf(value) != -1;
-    }
-
 }
